@@ -73,10 +73,14 @@ class MockLocation extends Location{
                   'The pedestrian path begins a short walk from Shibaura-futo Station along the Yurikamome on the "Tokyo side" of the bridge, while Odaiba Kaihinkoen Station is the nearest station on the "Odaiba side."')
         ]),
   ];
-  static Location FetchAny(){
+  static Location fetchAny(){
     return MockLocation.items[0];
   }
-  static List<Location> FetchAll(){
+  static List<Location> fetchAll(){
     return MockLocation.items;
+  }
+
+  static Location fetch(int index){
+    return MockLocation.items[index];
   }
 }

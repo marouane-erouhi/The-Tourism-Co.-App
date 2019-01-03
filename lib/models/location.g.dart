@@ -8,6 +8,7 @@ part of 'location.dart';
 
 Location _$LocationFromJson(Map<String, dynamic> json) {
   return new Location(
+      id: json['id'] as int,
       name: json['name'] as String,
       url: json['url'] as String,
       facts: (json['facts'] as List)
@@ -18,9 +19,10 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
 }
 
 abstract class _$LocationSerializerMixin {
+  int get id;
   String get name;
   String get url;
   List<LocationFact> get facts;
   Map<String, dynamic> toJson() =>
-      <String, dynamic>{'name': name, 'url': url, 'facts': facts};
+      <String, dynamic>{'id': id, 'name': name, 'url': url, 'facts': facts};
 }

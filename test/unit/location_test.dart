@@ -1,22 +1,19 @@
-import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:hello_world/models/location.dart';
 
 void main(){
-  test('test location deserialization', (){
+  test('test location deserialization', () async{
     //some raw data for testing
-    const locationJSON = '{ "name": "Arashiyama Bamboo Grove", "url": "https://cdn-images-1.medium.com/max/2000/1*vdJuSUKWl_SA9Lp-32ebnA.jpeg", "facts": [{ "title": "Summary", "text": "This bamboo grove is on the outskirts of Kyoto." }] }';
+    final locations = await Location.fetchAll();
 
-    final locationMap = json.decode(locationJSON) as Map<String, dynamic>;
+    for(var location in locations){
+      expect(location.name, hasLength(greaterThan(0)));
+      expect(location.url, hasLength(greaterThan(0)));
 
-    expect("Arashiyama Bamboo Grove", equals(locationMap['name']));
-
-    final location = Location.fromJson(locationMap);
-
-    expect(location.name, equals(locationMap['name']));
-    expect(location.url, equals(locationMap['url']));
-
-    expect(location.facts[0].title, matches(locationMap['facts'][0]['title']));
-    expect(location.facts[0].text, matches(locationMap['facts'][0]['text']));
+      final fetchedLocation = await Location.fetchById(location.id);
+      expect(fetchedLocation.name, equals(location.name));
+      expect(fetchedLocation.url, equals(location.url));
+      // expect(fetchedLocation.facts, hasLength(location.facts.length));
+    }
   });
 }

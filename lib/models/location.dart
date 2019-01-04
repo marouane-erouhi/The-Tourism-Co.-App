@@ -12,8 +12,18 @@ class Location{
   final int id;
   final String name;
   final String url;
+  final String userItinerarySummary;
+  final String tourPackageName;
   final List<LocationFact> facts;
-  Location({this.id,this.name, this.url,this.facts});
+
+  Location({this.id,this.name, this.url, this.userItinerarySummary, this.tourPackageName, this.facts});
+  Location.blank() :
+    id = 0,
+    name = '',
+    url = '',
+    userItinerarySummary = '',
+    tourPackageName = '',
+    facts = [];
 
   factory Location.fromJson(Map<String, dynamic> json) =>
     _$LocationFromJson(json);

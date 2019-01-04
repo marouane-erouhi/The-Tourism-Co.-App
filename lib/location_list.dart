@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'models/location.dart';
+import 'components/location_tile.dart';
 import 'styles.dart';
 import 'location_detail.dart';
 
-class LocationList extends StatelessWidget{
-  final List<Location> _locations;
+const listItemHeight = 245.0;
 
-  LocationList(this._locations);
+class LocationList extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() => _LocationListState();
+
+}
+class _LocationListState extends State<LocationList>{
+  List<Location> _locations = [];
+  bool loading = false;
+
+  @override
+  void initState(){
+    super.initState();
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,23 +31,56 @@ class LocationList extends StatelessWidget{
           style: Styles.navBarTitle
         ),
       ),
-      body: ListView.builder(
-        itemCount: _locations.length,
-        itemBuilder: _listViewItemBuilder,
-      )
+      body: RefreshIndicator(
+        onRefresh: loadData,
+        child: Column(
+          children:[ 
+            _renderProgressBar(context),
+            Expanded( child: _renderListView(context)),
+          ]
+        )
+    ));
+  }
+
+  Future<void> loadData() async{
+    if(mounted){
+      setState(() => loading = true);
+      final locations = await Location.fetchAll();
+      setState(() {
+        this._locations = locations;
+        this.loading = false;
+      });
+    }
+  }
+
+  Widget _renderProgressBar(BuildContext context){
+    return (this.loading ? LinearProgressIndicator(
+      value: null,
+      backgroundColor: Colors.white,
+      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+    ) : Container());
+  }
+
+  Widget _renderListView(BuildContext context){
+    return ListView.builder(
+      itemCount: _locations.length,
+      itemBuilder: _listViewItemBuilder,
     );
   }
 
   Widget _listViewItemBuilder(BuildContext context, int index){
-    print("_listViewItemBuilder run");
     Location location = _locations[index];
-    return ListTile(
-      leading: _itemThumbnail(location),
-      title: _itemTitle(location),
-      contentPadding: EdgeInsets.all(10.0),
-      onTap: (){
-        _navigateToLocationDetail(context,index);
-      },
+    return GestureDetector(
+      onTap: () => _navigateToLocationDetail(context, location.id),
+      child: Container(
+        height: listItemHeight,
+        child: Stack(
+          children: [
+            _tileImage(location.url, MediaQuery.of(context).size.width,listItemHeight),
+            _tileFooter(location)            
+          ]
+        ),
+      )
     );
   }
 
@@ -45,16 +92,31 @@ class LocationList extends StatelessWidget{
         ));
   }
 
-  Widget _itemThumbnail(Location location){
+  Widget _tileImage(String url, double width, double height){
     return Container(
-      constraints: BoxConstraints(
-        maxWidth: 100.0
-      ),
-      child: Image.network(location.url, fit:BoxFit.fitHeight),
+      constraints: BoxConstraints.expand(),
+      child: Image.network(url, fit:BoxFit.cover),
     );
   }
   Widget _itemTitle(Location location){
     return Text(location.name, style: Styles.textDefault);
+  }
+
+  Widget _tileFooter(Location location){
+    final info = LocationTile(location: location, darkTheme: true,);
+    final overlay = Container(
+      padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: Styles.horizontalPaddingDefault),
+      decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+      child: info,
+    );
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+         overlay,
+      ],
+    );
   }
 
 }

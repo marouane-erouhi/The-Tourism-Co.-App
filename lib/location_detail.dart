@@ -3,14 +3,38 @@ import 'models/location.dart';
 import 'styles.dart';
 import 'models/mocks/mock_location.dart';
 
-class LocationDetail extends StatelessWidget {
+class LocationDetail extends StatefulWidget {
   final int locationID;
+
   LocationDetail(this.locationID);
 
   @override
-  Widget build(BuildContext context) {
-    var location = MockLocation.fetch(this.locationID);
-    
+  createState() => _LocationDetailState(locationID);
+}
+
+class _LocationDetailState extends State<LocationDetail> {
+  final int locationID;
+  Location location = Location.blank();
+
+  _LocationDetailState(this.locationID);
+
+  @override
+  void initState(){
+    super.initState();
+    loadData();
+  }
+
+  loadData() async{
+    if(mounted){
+      final location = await Location.fetchById(this.locationID);
+      setState((){
+        this.location = location;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -63,9 +87,17 @@ class LocationDetail extends StatelessWidget {
     );
   }
   Widget _bannerImage(String url, double height){
+    Image image;
+    try{
+      if(url.isNotEmpty){
+        image = Image.network(url, fit:BoxFit.fitWidth);
+      }
+    }catch(e){
+      print('could not load image from $url');
+    }
     return Container(
       constraints: BoxConstraints.tightFor(height: height),
-      child: Image.network(url, fit:BoxFit.fitWidth),
+      child: image
     );
   }
   

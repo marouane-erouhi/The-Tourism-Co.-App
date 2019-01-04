@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'models/location.dart';
+import 'components/default_app_bar.dart';
 import 'components/location_tile.dart';
+import 'components/banner_image.dart';
 import 'styles.dart';
 import 'location_detail.dart';
 
@@ -25,12 +27,7 @@ class _LocationListState extends State<LocationList>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Locations",
-          style: Styles.navBarTitle
-        ),
-      ),
+      appBar: DefaultAppBar(),
       body: RefreshIndicator(
         onRefresh: loadData,
         child: Column(
@@ -76,7 +73,7 @@ class _LocationListState extends State<LocationList>{
         height: listItemHeight,
         child: Stack(
           children: [
-            _tileImage(location.url, MediaQuery.of(context).size.width,listItemHeight),
+            BannerImage(url:location.url, height:listItemHeight),
             _tileFooter(location)            
           ]
         ),

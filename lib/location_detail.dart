@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'models/location.dart';
 import 'components/banner_image.dart';
 import 'components/default_app_bar.dart';
 import 'components/location_tile.dart';
+import 'models/location.dart';
 import 'styles.dart';
 
 const BannerImageHeight = 300.0;

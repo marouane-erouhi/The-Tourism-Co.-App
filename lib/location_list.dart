@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'models/location.dart';
+import 'package:flutter/material.dart';
+import 'components/banner_image.dart';
 import 'components/default_app_bar.dart';
 import 'components/location_tile.dart';
-import 'components/banner_image.dart';
-import 'styles.dart';
+import 'models/location.dart';
 import 'location_detail.dart';
+import 'styles.dart';
 
 const listItemHeight = 245.0;
 
@@ -87,16 +87,6 @@ class _LocationListState extends State<LocationList>{
         MaterialPageRoute(
           builder: (context) => LocationDetail(locationID),
         ));
-  }
-
-  Widget _tileImage(String url, double width, double height){
-    return Container(
-      constraints: BoxConstraints.expand(),
-      child: Image.network(url, fit:BoxFit.cover),
-    );
-  }
-  Widget _itemTitle(Location location){
-    return Text(location.name, style: Styles.textDefault);
   }
 
   Widget _tileFooter(Location location){
